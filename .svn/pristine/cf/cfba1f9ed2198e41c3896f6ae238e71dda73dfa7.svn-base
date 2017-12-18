@@ -1,1 +1,0 @@
-<wj-input-color #color [value]="hexColor" (valueChanged)="onColorChange(color.value)" [isDisabled]="disabled" ></wj-input-color>

@@ -1,6 +1,0 @@
-.center{
-    margin: auto;
-}
-button {
-    min-width: 50px;
-}
