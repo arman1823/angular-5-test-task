@@ -1,0 +1,11 @@
+<button id="spinnerBtn"
+        mat-raised-button
+        type={{type}}
+        class="ffh-button"
+        [disabled]="process.isProcessing || !isValid ? true : null"
+        (click)="type === 'button' ? this.process.do() : null">
+    <div class="center">
+      <i [ngClass]="{'fa-spin':process.isProcessing}"  class='fa fa-refresh'></i>
+    </div>
+</button>
+

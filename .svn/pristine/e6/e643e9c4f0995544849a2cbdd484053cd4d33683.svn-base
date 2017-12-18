@@ -1,0 +1,56 @@
+<mat-card class="ffh-card">
+  <div><span class="entity-header">{{ entityTitle }}</span></div>
+  <mat-card-content>
+    <div class="operations-raw">
+      <app-filter (searchValueChanged)="onSearchValueChanged($event)"></app-filter>
+
+      <button (click)="onAdd()" mat-raised-button class="ffh-button">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+      <button (click)="onEdit()" [disabled]="!modelIsSelected" mat-raised-button class="ffh-button">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+      </button>
+      <button (click)="onDelete()" [disabled]="!modelIsSelected" mat-raised-button class="ffh-button">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+
+      <app-spinner-button [process]="moveUpProcess" type="'button'"
+                          (click)="onMoveUp()"
+                          [isValid]="modelIsSelected"
+                          [iconOnly]="true">
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+      </app-spinner-button>
+
+      <app-spinner-button [process]="moveDownProcess" type="'button'"
+                          (click)="onMoveDown()"
+                          [isValid]="modelIsSelected"
+                          [iconOnly]="true">
+        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+      </app-spinner-button>
+
+      <app-refresh-button [process]="getAllProcess"></app-refresh-button>
+
+    </div>
+
+    <table class="ffh-table">
+      <thead>
+      <tr>
+        <th>Select</th>
+        <th>Number</th>
+        <th>Name</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of list"  [ngClass]="{'selected-row': selected?.id === item.id}">
+        <td>
+          <mat-radio-button (click)="onSelected(item)" [checked]="selected?.id === item.id"></mat-radio-button>
+        </td>
+        <td>{{ item.number }}</td>
+        <td>{{ item.name }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </mat-card-content>
+</mat-card>

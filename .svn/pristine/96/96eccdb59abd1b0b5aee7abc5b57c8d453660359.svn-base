@@ -1,0 +1,30 @@
+button{
+  min-height: 36px;
+}
+.icon-only{
+  min-width: 50px;
+  padding: 0;
+}
+.visible{
+  visibility: visible;
+}
+
+.hidden{
+  visibility: hidden;
+}
+
+.ffh-load-spinner-inner-container{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  align-items: center;
+}
+.center{
+  margin-left: 11px;
+}
+.placeholder{
+  visibility: hidden;
+}

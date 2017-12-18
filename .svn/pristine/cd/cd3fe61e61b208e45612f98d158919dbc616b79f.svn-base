@@ -1,0 +1,7 @@
+$assets-root: '/assets';
+$images-root: '/img/';
+$ffh-accent-color: #288ccd;
+$ffh-light-color: #f7f7f9;
+$ffh-dark-trans-color: #022337;
+$ffh-dark-color: #385261;
+$ffh-light-trans-color : rgba(255,255,255,0.1);

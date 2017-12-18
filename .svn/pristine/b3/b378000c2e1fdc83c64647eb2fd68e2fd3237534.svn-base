@@ -1,0 +1,11 @@
+<nav>
+  <a routerLink="./system" routerLinkActive="active">system</a>
+  <a routerLink="./system/sitem-all-fields" routerLinkActive="active">sys-sitem-all-fields</a>
+
+  <a routerLink="./pos" routerLinkActive="active">pos</a>
+  <a routerLink="./pos/print-groups" routerLinkActive="active">pos-print-groups</a>
+
+</nav>
+<div class="ffh-main-content">
+  <router-outlet></router-outlet>
+</div>

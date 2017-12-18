@@ -1,0 +1,526 @@
+<app-alert-view [alerts]="alerts"></app-alert-view>
+
+<mat-dialog-actions>
+  <app-spinner-loader [process]="getDepartmentsProcess"></app-spinner-loader>
+  <app-spinner-loader [process]="getAccountsProcess"></app-spinner-loader>
+
+  <div [ngSwitch]="componentView" class="w-100">
+    <ng-template [ngSwitchCase]="EditDialogComponentView.edit">
+      <mat-dialog-content>{{ data.name }}</mat-dialog-content>
+      <div *ngIf="!isFormShow" class="column" (keyup.enter)="onSysDepartmentSelect()">
+
+        <app-filter (searchValueChanged)="onSearchValueChanged($event)"></app-filter>
+        <table class="ffh-table">
+          <thead>
+          <tr>
+            <th i18n="@@SysSitemDialog_01">Select</th>
+            <th i18n="@@SysSitemDialog_02">Department</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let department of searchedDepartments"
+              [ngClass]="{'selected-row': selectedDepartment == department}">
+            <td>
+              <mat-radio-button
+                (click)="selectedDepartment = department"
+                [checked]="selectedDepartment == department"></mat-radio-button>
+            </td>
+            <td>{{ department.name }}</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <button mat-raised-button type="button" class="ffh-button" mat-button
+                (click)="onSysDepartmentSelect()"
+                [disabled]="!selectedDepartment"
+                i18n="@@SysSitemDialog_03">
+          Select
+        </button>
+      </div>
+      <form *ngIf="isFormShow" (ngSubmit)="onSubmit()" #thisForm="ngForm">
+
+        <mat-tab-group>
+          <mat-tab label="General" i18n-label="@@SysSitemDialog_04">
+            <div class="tab-form">
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       autofocus
+                       i18n-placeholder="@@SysSitemDialog_05"
+                       name="name"
+                       placeholder="Name"
+                       [(ngModel)]="data.model.name">
+              </mat-input-container>
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       i18n-placeholder="@@SysSitemDialog_06"
+                       name="shortDescription"
+                       (focus)="onDescriptionFocus()"
+                       placeholder="Short Description"
+                       [(ngModel)]="data.model.shortDescription">
+              </mat-input-container>
+
+              <mat-form-field><mat-select placeholder="Department"
+                                          i18n-placeholder="@@SysSitemDialog_07"
+                                          [(ngModel)]="data.model.sysDepartmentId"
+                                          name="department">
+                <mat-option *ngFor="let department of departments" [value]="department.sysDepartmentId">
+                  {{ department.name }}
+                </mat-option>
+              </mat-select></mat-form-field>
+
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       type="number"
+                       i18n-placeholder="@@SysSitemDialog_08"
+                       name="price1"
+                       placeholder="Price 1"
+                       [(ngModel)]="data.model.price1">
+              </mat-input-container>
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       type="number"
+                       i18n-placeholder="@@SysSitemDialog_09"
+                       name="price2"
+                       placeholder="Price 2"
+                       [(ngModel)]="data.model.price2">
+              </mat-input-container>
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       type="number"
+                       i18n-placeholder="@@SysSitemDialog_10"
+                       name="price3"
+                       placeholder="Price 3"
+                       [(ngModel)]="data.model.price3">
+              </mat-input-container>
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       type="number"
+                       i18n-placeholder="@@SysSitemDialog_11"
+                       name="price4"
+                       placeholder="Price 4"
+                       [(ngModel)]="data.model.price4">
+              </mat-input-container>
+              <mat-input-container>
+                <input class="ffh-form-control"
+                       matInput
+                       required
+                       type="number"
+                       i18n-placeholder="@@SysSitemDialog_12"
+                       name="price5"
+                       placeholder="Price 5"
+                       [(ngModel)]="data.model.price5">
+              </mat-input-container>
+              <div>
+                <div class="plus">
+                  <span *ngIf="!isAddingPlu" i18n="@@SysSitemDialog_13">plus / barcodes</span>
+
+                  <input [(ngModel)]="pluToBeAdded"
+                         *ngIf="isAddingPlu"
+                         name="plu"
+                         i18n-placeholder="@@SysSitemDialog_14"
+                         placeholder="plu / barcode">
+
+                  <i *ngIf="isAddingPlu" (click)="onAddPlu()"
+                     class="fa fa-check" aria-hidden="true"></i>
+
+                  <i *ngIf="isAddingPlu" (click)="resetAddingPlu()" class="fa fa-close"
+                     aria-hidden="true"></i>
+
+                  <i *ngIf="!isAddingPlu" (click)="isAddingPlu = true" class="fa fa-plus"
+                     aria-hidden="true"></i>
+
+                </div>
+
+                <table class="ffh-table">
+                  <tbody>
+                  <tr *ngFor="let plu of data.model.plus">
+                    <td>{{ plu.pluNumber }}</td>
+                    <td>
+                      <i (click)="onDeletePlu(plu)" class="fa fa-trash" aria-hidden="true"></i>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Pos Terminal Setup" i18n-label="@@SysSitemDialog_15">
+            <div class="tab-form">
+              <mat-tab-group>
+                <mat-tab label="Pos General" i18n-label="@@SysSitemDialog_16">
+                  <div class="tab-form">
+                    <mat-checkbox [(ngModel)]="data.model.tax" name="tax">Tax</mat-checkbox>
+
+                    <mat-form-field><mat-select placeholder="Price Entry"
+                                                i18n-placeholder="@@SysSitemDialog_17"
+                                                [(ngModel)]="data.model.priceEntry"
+                                                name="priceEntry">
+                      <mat-option *ngFor="let price of priceEntries" [value]="price.id">
+                        {{ price.name }}
+                      </mat-option>
+
+                    </mat-select></mat-form-field>
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="scale"
+                                  [(ngModel)]="data.model.scale">
+                      Scale
+                    </mat-checkbox>
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="isCondiment"
+                                  [(ngModel)]="data.model.isCondiment">
+                      Is Condiment
+                    </mat-checkbox>
+
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_18"
+                             name="kp1"
+                             placeholder="Kp 1"
+                             [(ngModel)]="data.model.kp1">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_19"
+                             name="kp2"
+                             placeholder="Kp 2"
+                             [(ngModel)]="data.model.kp2">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_20"
+                             name="kp3"
+                             placeholder="Kp 3"
+                             [(ngModel)]="data.model.kp3">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_21"
+                             name="kp4"
+                             placeholder="Kp 4"
+                             [(ngModel)]="data.model.kp4">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_21"
+                             name="rm1"
+                             placeholder="Rm 1"
+                             [(ngModel)]="data.model.rm1">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_22"
+                             name="rm2"
+                             placeholder="Rm 2"
+                             [(ngModel)]="data.model.rm2">
+                    </mat-input-container>
+
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="rcptPrint"
+                                  [(ngModel)]="data.model.rcptPrint">
+                      Rcpt Print
+                    </mat-checkbox>
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="condimentEntry"
+                                  [(ngModel)]="data.model.condimentEntry">
+                      Condiment Entry
+                    </mat-checkbox>
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="editDescription"
+                                  [(ngModel)]="data.model.editDescription">
+                      Edit Description
+                    </mat-checkbox>
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="pluStatus"
+                                  [(ngModel)]="data.model.pluStatus">
+                      Plu Status
+                    </mat-checkbox>
+
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="wordWrap"
+                                  [(ngModel)]="data.model.wordWrap">
+                      Word Wrap
+                    </mat-checkbox>
+
+                    <mat-form-field><mat-select placeholder="printGroup"
+                                                i18n-placeholder="@@SysSitemDialog_23"
+                                                [(ngModel)]="data.model.printGroup"
+                                                name="printGroup">
+                      <mat-option *ngFor="let printGroup of printGroups"
+                                  [value]="printGroup">
+                        {{ account.name }}
+                      </mat-option>
+                    </mat-select></mat-form-field>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Image" i18n-label="@@SysSitemDialog_24">
+                  <div class="tab-form">
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             i18n-placeholder="@@SysSitemDialog_25"
+                             name="imagePosition"
+                             placeholder="Image Position"
+                             [(ngModel)]="data.model.imagePosition">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             i18n-placeholder="@@SysSitemDialog_26"
+                             name="styleId"
+                             placeholder="Style Id"
+                             [(ngModel)]="data.model.styleId">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             i18n-placeholder="@@SysSitemDialog_27"
+                             name="roundBias"
+                             placeholder="Round Bias"
+                             [(ngModel)]="data.model.roundBias">
+                    </mat-input-container>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Advanced" i18n-label="@@SysSitemDialog_28">
+                  <div class="tab-form">
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="showClipboard"
+                                  [(ngModel)]="data.model.showClipboard">
+                      Show Clipboard
+                    </mat-checkbox>
+
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_29"
+                             name="qtyTrip1"
+                             placeholder="Qty Trip 1"
+                             [(ngModel)]="data.model.qtyTrip1">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_30"
+                             name="qtyTrip2"
+                             placeholder="Qty Trip 2"
+                             [(ngModel)]="data.model.qtyTrip2">
+                    </mat-input-container>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_31"
+                             name="qtyTrip3"
+                             placeholder="Qty Trip 3"
+                             [(ngModel)]="data.model.qtyTrip3">
+                    </mat-input-container>
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="enabled"
+                                  [(ngModel)]="data.model.enabled">
+                      Enabled
+                    </mat-checkbox>
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_32"
+                             name="iTare"
+                             placeholder="I Tare"
+                             [(ngModel)]="data.model.iTare">
+                    </mat-input-container>
+
+                    <mat-checkbox class="ffh-form-control checkbox"
+                                  name="iDisc"
+                                  [(ngModel)]="data.model.iDisc">
+                      I Disc
+                    </mat-checkbox>
+
+                    <mat-form-field><mat-select [(ngModel)]="data.model.incomeAccountId"
+                                                name="incomeAccount"
+                                                i18n-placeholder="@@SysSitemDialog_33"
+                                                placeholder="Income Account">
+                      <mat-option *ngFor="let account of glAccountsAccounts"
+                                  [value]="account.sysGlAccountId">
+                        {{ account.name }}
+                      </mat-option>
+                    </mat-select></mat-form-field>
+
+
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_34"
+                             name="buttonWidth"
+                             placeholder="Button Width"
+                             [(ngModel)]="data.model.buttonWidth">
+                    </mat-input-container>
+
+                    <mat-input-container>
+                      <input class="ffh-form-control"
+                             matInput
+                             required
+                             type="number"
+                             i18n-placeholder="@@SysSitemDialog_35"
+                             name="textSize"
+                             placeholder="Text Size"
+                             [(ngModel)]="data.model.textSize">
+                    </mat-input-container>
+
+                    <p i18n="@@SysSitemDialog_36">Button Colour</p>
+                    <app-ffh-color-input
+                      required
+                      name="buttonColour"
+                      [(ngModel)]="data.model.buttonColour"></app-ffh-color-input>
+
+                    <p i18n="@@SysSitemDialog_37">Text Colour</p>
+                    <app-ffh-color-input
+                      required
+                      name="textColour"
+                      [(ngModel)]="data.model.textColour"></app-ffh-color-input>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+
+        <div class="ffh-btn-raw-container">
+          <button mat-raised-button type="button" class="ffh-button" mat-button
+                  [mat-dialog-close]="false"
+                  i18n="@@SysSitemDialog_38">
+            Cancel
+          </button>
+          <app-spinner-button [type]="'submit'" [process]="submitProcess"
+                              [isValid]="thisForm.form.valid && !isAddingPlu"
+                              i18n="@@SysSitemDialog_39">Submit
+          </app-spinner-button>
+
+        </div>
+      </form>
+
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="EditDialogComponentView.delete">
+      <form (ngSubmit)="onSubmit()" #thisForm="ngForm">
+        <div>
+          <mat-dialog-content>
+            <div class="m-r-5" i18n="@@SysSitemDialog_40">Delete</div>
+            {{ data.model.name }}?
+          </mat-dialog-content>
+        </div>
+        <div class="ffh-btn-raw-container">
+          <button mat-raised-button type="button" class="ffh-button" mat-button
+                  [mat-dialog-close]="false"
+                  i18n="@@SysSitemDialog_41">
+            Cancel
+          </button>
+          <app-spinner-button [type]="'submit'" [process]="submitProcess"
+                              i18n="@@SysSitemDialog_42">Submit
+          </app-spinner-button>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="EditDialogComponentView.view">
+      <table class="ffh-table">
+        <tbody>
+        <tr>
+          <td i18n="@@SysSitemDialog_43">Name</td>
+          <td>{{ data.returnModel.name }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_44">ShortDescription</td>
+          <td>{{ data.returnModel.shortDescription }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_45">Department</td>
+          <td>{{ data.returnModel.department }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_47">Tax</td>
+          <td>{{ data.returnModel.tax | currency:'USD':true }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_48">Price1</td>
+          <td>{{ data.returnModel.price1 | currency:'USD':true }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_49">Price2</td>
+          <td>{{ data.returnModel.price2 | currency:'USD':true }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_50">Price3</td>
+          <td>{{ data.returnModel.price3 | currency:'USD':true }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_51">Price4</td>
+          <td>{{ data.returnModel.price4 | currency:'USD':true }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_52">Price5</td>
+          <td>{{ data.returnModel.price5 | currency:'USD':true }}</td>
+        </tr>
+        <tr>
+          <td i18n="@@SysSitemDialog_71">Enabled</td>
+          <td>{{ data.returnModel.enabled }}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="ffh-btn-raw-container">
+        <button mat-raised-button type="button" class="ffh-button" mat-button
+                [mat-dialog-close]="true"
+                i18n="@@SysSitemDialog_85">
+          Continue
+        </button>
+      </div>
+    </ng-template>
+  </div>
+
+</mat-dialog-actions>

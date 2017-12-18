@@ -1,0 +1,77 @@
+<app-alert-view [alerts]="alerts"></app-alert-view>
+
+<mat-dialog-actions>
+  <div [ngSwitch]="componentView" class="w-100">
+    <ng-template [ngSwitchCase]="EditDialogComponentView.edit">
+      <mat-dialog-content>{{ data.name }}</mat-dialog-content>
+      <form (ngSubmit)="onSubmit()" #thisForm="ngForm" >
+        <div class="flex-column">
+          <mat-input-container>
+            <input class="ffh-form-control"
+                   matInput
+                   required
+                   type="text"
+                   name="name"
+                   placeholder="Name"
+                   i18n-placeholder="@@PosPrintGroupsDialog_01"
+                   [(ngModel)]="data.model.name">
+          </mat-input-container>
+        </div>
+        <div class="ffh-btn-raw-container">
+          <button mat-raised-button type="button" class="ffh-button" mat-button
+                  [mat-dialog-close]="false"
+                  i18n="@@PosPrintGroupsDialog_02" >
+            Cancel
+          </button>
+          <app-spinner-button [type]="'submit'" [process]="submitProcess"
+                              [isValid]="thisForm.form.valid"
+                              i18n="@@PosPrintGroupsDialog_03" >Submit
+          </app-spinner-button>
+
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="EditDialogComponentView.delete">
+      <form (ngSubmit)="onSubmit()" #thisForm="ngForm" >
+        <div >
+          <mat-dialog-content>Delete {{ data.model.name }}?</mat-dialog-content>
+        </div>
+        <div class="ffh-btn-raw-container">
+          <button mat-raised-button type="button" class="ffh-button" mat-button
+                  [mat-dialog-close]="false"
+                  i18n="@@PosPrintGroupsDialog_04" >
+            Cancel
+          </button>
+          <app-spinner-button [type]="'submit'" [process]="submitProcess"
+                              i18n="@@PosPrintGroupsDialog_05" >Submit
+          </app-spinner-button>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="EditDialogComponentView.view">
+      <table class="ffh-table" >
+        <tbody>
+        <tr>
+          <td>Number</td>
+          <td>{{ data.returnModel.number }}</td>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td>{{ data.returnModel.name }}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="ffh-btn-raw-container">
+        <button mat-raised-button type="button" class="ffh-button" mat-button
+                [mat-dialog-close]="true"
+                i18n="@@PosPrintGroupsDialog_06" >
+          Continue
+        </button>
+      </div>
+    </ng-template>
+  </div>
+
+</mat-dialog-actions>
+

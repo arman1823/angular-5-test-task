@@ -1,0 +1,17 @@
+<button id="spinnerBtn"
+        mat-raised-button
+        type={{type}}
+        class="ffh-button"
+        [ngClass]="{'icon-only':iconOnly}"
+        [disabled]="process.isProcessing || !isValid ? true : null"
+        (click)="type === 'button' ? this.process.do() : null">
+  <div class="ffh-load-spinner-inner-container">
+    <i *ngIf="!iconOnly || iconOnly&&process.isProcessing"
+       [ngClass]="{'visible':process.isProcessing,'hidden':!process.isProcessing}"
+       class='fa fa-spinner fa-spin'></i>
+    <div [ngClass]="{'center':!iconOnly}" *ngIf="!iconOnly || iconOnly&&!process.isProcessing">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</button>
+

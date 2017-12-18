@@ -1,0 +1,8 @@
+.search-by {
+  width: 120px;
+  margin-right: 20px;
+}
+.ffh-card mat-select{
+  margin-top: 0;
+  margin-bottom: 0;
+}

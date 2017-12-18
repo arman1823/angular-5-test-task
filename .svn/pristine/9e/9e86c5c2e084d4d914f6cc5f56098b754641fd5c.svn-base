@@ -1,0 +1,68 @@
+<mat-card class="ffh-card">
+  <div><span class="entity-header">{{ entityTitle }}</span></div>
+  <mat-card-content>
+    <div class="operations-raw">
+      <app-search [isSearching]="isSearching"
+                  (searchString)="onSearchString($event)">
+      </app-search>
+
+      <mat-form-field class="search-by">
+        <mat-select placeholder="Search By"
+                    [(ngModel)]="optionModel.searchType"
+                    name="searchType">
+          <mat-option value="0">Name</mat-option>
+          <mat-option value="1">Plu/Barcode</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button (click)="onAdd()" mat-raised-button class="ffh-button">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+      <button (click)="onEdit()" [disabled]="!modelIsSelected" mat-raised-button class="ffh-button">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+      </button>
+      <button (click)="onDelete()" [disabled]="!modelIsSelected" mat-raised-button class="ffh-button">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+
+    </div>
+
+    <table class="ffh-table">
+      <thead>
+      <tr>
+        <th i18n="@@SysSitem_01">Select</th>
+        <th i18n="@@SysSitem_02">Name</th>
+        <th i18n="@@SysSitem_03">Short Description</th>
+        <th i18n="@@SysSitem_04">Department</th>
+        <th i18n="@@SysSitem_05">Tax</th>
+        <th i18n="@@SysSitem_06">Price 1</th>
+        <th i18n="@@SysSitem_07">Price 2</th>
+        <th i18n="@@SysSitem_08">Price 3</th>
+        <th i18n="@@SysSitem_09">Price 4</th>
+        <th i18n="@@SysSitem_10">Price 5</th>
+        <th i18n="@@SysSitem_11">Enabled</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of model" [ngClass]="{'selected-row': selected?.id === item.id}">
+        <td>
+          <mat-radio-button (click)="onSelected(item)"
+                            [checked]="selected?.id === item.id"></mat-radio-button>
+        </td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.shortDescription }}</td>
+        <td>{{ item.sysDepartment }}</td>
+        <td>{{ item.tax }}</td>
+        <td>{{ item.price1 | currency:'USD':true }}</td>
+        <td>{{ item.price2 | currency:'USD':true }}</td>
+        <td>{{ item.price3 | currency:'USD':true }}</td>
+        <td>{{ item.price4 | currency:'USD':true }}</td>
+        <td>{{ item.price5 | currency:'USD':true }}</td>
+        <td>{{ item.enabled }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </mat-card-content>
+</mat-card>

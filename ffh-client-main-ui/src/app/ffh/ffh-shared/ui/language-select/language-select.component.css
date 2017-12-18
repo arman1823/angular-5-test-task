@@ -1,0 +1,31 @@
+.mat-form-field {
+  width: auto;
+}
+
+.select-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  max-width:150px;
+}
+
+mat-form-field ::ng-deep .mat-form-field-wrapper{
+  padding-bottom: 0;
+}
+
+mat-form-field ::ng-deep .mat-form-field-wrapper .mat-form-field-infix {
+  border-top: 0;
+}
+
+mat-form-field ::ng-deep .mat-select-value,
+mat-form-field ::ng-deep .mat-form-field-underline,
+mat-form-field ::ng-deep .mat-form-field-placeholder-wrapper  {
+  display: none;
+}
+
+.icon{
+  display: block;
+  font-size: 22px;
+  padding-top: 5px;
+}
